@@ -2,16 +2,9 @@ import { int, mysqlEnum, mysqlTable, text, timestamp, varchar } from "drizzle-or
 
 /**
  * Core user table backing auth flow.
- * Extend this file with additional tables as your product grows.
- * Columns use camelCase to match both database fields and generated types.
  */
 export const users = mysqlTable("users", {
-  /**
-   * Surrogate primary key. Auto-incremented numeric value managed by the database.
-   * Use this for relations between tables.
-   */
   id: int("id").autoincrement().primaryKey(),
-  /** Manus OAuth identifier (openId) returned from the OAuth callback. Unique per user. */
   openId: varchar("openId", { length: 64 }).notNull().unique(),
   name: text("name"),
   email: varchar("email", { length: 320 }),
@@ -26,7 +19,7 @@ export type User = typeof users.$inferSelect;
 export type InsertUser = typeof users.$inferInsert;
 
 /**
- * Projetos de audiodescrição criados pelos usuários
+ * Tabela de projetos de audiodescrição
  */
 export const adProjects = mysqlTable("ad_projects", {
   id: int("id").autoincrement().primaryKey(),
@@ -38,9 +31,11 @@ export const adProjects = mysqlTable("ad_projects", {
   videoDuration: int("video_duration"), // Duração em segundos
   status: mysqlEnum("status", ["processing", "completed", "failed"]).default("processing").notNull(),
   scriptData: text("script_data"), // JSON do roteiro de audiodescrição
-  audioUrl: text("audio_url"), // URL do áudio final no S3
-  audioKey: varchar("audio_key", { length: 500 }), // Chave do áudio no S3
   errorMessage: text("error_message"),
+  completeAudioMp3Url: text("complete_audio_mp3_url"),
+  completeAudioMp3Key: text("complete_audio_mp3_key"),
+  completeAudioWavUrl: text("complete_audio_wav_url"),
+  completeAudioWavKey: text("complete_audio_wav_key"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
   completedAt: timestamp("completed_at"),
@@ -50,19 +45,18 @@ export type AdProject = typeof adProjects.$inferSelect;
 export type InsertAdProject = typeof adProjects.$inferInsert;
 
 /**
- * Unidades descritivas individuais do roteiro de audiodescrição
+ * Tabela de unidades descritivas (cada descrição individual)
  */
 export const adUnits = mysqlTable("ad_units", {
   id: int("id").autoincrement().primaryKey(),
-  projectId: int("project_id").notNull().references(() => adProjects.id, { onDelete: 'cascade' }),
+  projectId: int("project_id").notNull().references(() => adProjects.id, { onDelete: "cascade" }),
   timestamp: int("timestamp").notNull(), // Timestamp em segundos
   type: mysqlEnum("type", ["nota_introdutoria", "descricao"]).notNull(),
-  text: text("text").notNull(),
-  audioUrl: text("audio_url"), // URL do áudio desta unidade no S3
+  text: text("text").notNull(), // Texto da audiodescrição
+  audioUrl: text("audio_url"), // URL do áudio TTS no S3
   audioKey: varchar("audio_key", { length: 500 }), // Chave do áudio no S3
   order: int("order").notNull(), // Ordem de exibição
   createdAt: timestamp("created_at").defaultNow().notNull(),
-  updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
 });
 
 export type AdUnit = typeof adUnits.$inferSelect;

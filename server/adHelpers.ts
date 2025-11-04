@@ -53,6 +53,10 @@ export async function updateAdProjectStatus(
     audioUrl?: string;
     audioKey?: string;
     errorMessage?: string;
+    completeAudioMp3Url?: string;
+    completeAudioMp3Key?: string;
+    completeAudioWavUrl?: string;
+    completeAudioWavKey?: string;
   }
 ) {
   const db = await getDb();
@@ -64,6 +68,10 @@ export async function updateAdProjectStatus(
   if (data?.audioUrl) updateData.audioUrl = data.audioUrl;
   if (data?.audioKey) updateData.audioKey = data.audioKey;
   if (data?.errorMessage) updateData.errorMessage = data.errorMessage;
+  if (data?.completeAudioMp3Url) updateData.completeAudioMp3Url = data.completeAudioMp3Url;
+  if (data?.completeAudioMp3Key) updateData.completeAudioMp3Key = data.completeAudioMp3Key;
+  if (data?.completeAudioWavUrl) updateData.completeAudioWavUrl = data.completeAudioWavUrl;
+  if (data?.completeAudioWavKey) updateData.completeAudioWavKey = data.completeAudioWavKey;
   
   if (status === "completed") {
     updateData.completedAt = new Date();

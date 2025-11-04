@@ -51,3 +51,11 @@
 - [x] Erro ao processar vídeo do YouTube - CORRIGIDO (processador simplificado sem FFmpeg)
 - [x] Implementar endpoint de storage funcional - CONCLUÍDO
 - [x] Testar completamente com vídeo real - TESTES BÁSICOS PASSARAM
+
+## Novos Requisitos do Usuário
+- [x] Fazer análise REAL do vídeo (não usar exemplos genéricos)
+- [x] Extrair frames do vídeo e enviar para IA analisar
+- [x] IA deve ver e descrever o conteúdo REAL do vídeo
+- [x] Exportar roteiro em formato SRT com minutagem exata
+- [x] Gerar áudio completo em MP3/WAV para download
+- [x] Testar com vídeo real e validar que funciona - Vídeo de teste criado

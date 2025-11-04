@@ -93,6 +93,31 @@ export default function ProjectView() {
     URL.revokeObjectURL(url);
   };
 
+  const downloadSRT = trpc.audiodescription.downloadSRT.useQuery(
+    { id: projectId },
+    { enabled: false }
+  );
+
+  const handleDownloadSRT = async () => {
+    try {
+      const result = await downloadSRT.refetch();
+      if (!result.data) {
+        toast.error("Erro ao baixar roteiro SRT");
+        return;
+      }
+      const blob = new Blob([result.data.content], { type: "text/plain" });
+      const url = URL.createObjectURL(blob);
+      const a = document.createElement("a");
+      a.href = url;
+      a.download = result.data.filename;
+      a.click();
+      URL.revokeObjectURL(url);
+      toast.success("Roteiro SRT baixado com sucesso!");
+    } catch (error) {
+      toast.error("Erro ao baixar roteiro SRT");
+    }
+  };
+
   const handleDelete = () => {
     if (confirm("Tem certeza que deseja deletar este projeto? Esta ação não pode ser desfeita.")) {
       deleteProject.mutate({ id: projectId });
@@ -206,10 +231,37 @@ export default function ProjectView() {
                     </CardDescription>
                   </div>
 
-                  <Button onClick={handleDownloadScript} variant="outline">
-                    <Download className="mr-2 h-4 w-4" />
-                    Baixar JSON
-                  </Button>
+                  <div className="flex gap-2">
+                    <Button onClick={handleDownloadScript} variant="outline">
+                      <Download className="mr-2 h-4 w-4" />
+                      Baixar JSON
+                    </Button>
+                    
+                    <Button onClick={handleDownloadSRT} variant="outline">
+                      <Download className="mr-2 h-4 w-4" />
+                      Baixar SRT
+                    </Button>
+                    
+                    {project.completeAudioMp3Url && (
+                      <>
+                        <Button
+                          variant="outline"
+                          onClick={() => window.open(project.completeAudioMp3Url!, "_blank")}
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Áudio MP3
+                        </Button>
+                        
+                        <Button
+                          variant="outline"
+                          onClick={() => window.open(project.completeAudioWavUrl!, "_blank")}
+                        >
+                          <Download className="mr-2 h-4 w-4" />
+                          Áudio WAV
+                        </Button>
+                      </>
+                    )}
+                  </div>
                 </div>
               </CardHeader>
               <CardContent>

@@ -4,7 +4,8 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import { processVideoSimple } from "./simpleProcessor";
+import { processRealVideo } from "./realVideoProcessor";
+import { generateSRT } from "./srtExporter";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -87,7 +88,7 @@ export const appRouter = router({
         });
         
         // Iniciar processamento em background
-        processVideoSimple(projectId, input.videoUrl, input.videoDuration).catch(
+        processRealVideo(projectId, input.videoUrl, input.videoDuration).catch(
           (error: unknown) => {
             console.error("Erro no processamento em background:", error);
           }
@@ -116,13 +117,40 @@ export const appRouter = router({
         });
         
         // Iniciar processamento em background (estimar 5 minutos)
-        processVideoSimple(projectId, input.youtubeUrl, 300).catch((error: unknown) => {
+        processRealVideo(projectId, input.youtubeUrl, 300).catch((error: unknown) => {
           console.error("Erro no processamento em background:", error);
         });
         
         return { projectId };
       }),
 
+    // Download SRT
+    downloadSRT: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input, ctx }) => {
+        const { getAdProjectById, getProjectAdUnits } = await import("./adHelpers");
+        
+        const project = await getAdProjectById(input.id);
+        if (!project || project.userId !== ctx.user.id) {
+          throw new TRPCError({ code: "FORBIDDEN", message: "Acesso negado" });
+        }
+        
+        const units = await getProjectAdUnits(input.id);
+        if (!units || units.length === 0) {
+          throw new TRPCError({
+            code: "NOT_FOUND",
+            message: "Projeto sem unidades descritivas",
+          });
+        }
+        
+        const srtContent = generateSRT(units);
+        
+        return {
+          content: srtContent,
+          filename: `audiodescricao_projeto_${input.id}.srt`,
+        };
+      }),
+    
     // Deletar projeto
     delete: protectedProcedure
       .input(z.object({ id: z.number() }))
