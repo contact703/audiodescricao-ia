@@ -4,10 +4,7 @@ import { systemRouter } from "./_core/systemRouter";
 import { publicProcedure, protectedProcedure, router } from "./_core/trpc";
 import { TRPCError } from "@trpc/server";
 import { z } from "zod";
-import {
-  processVideoInBackground,
-  processYouTubeVideoInBackground,
-} from "./backgroundProcessor";
+import { processVideoSimple } from "./simpleProcessor";
 
 export const appRouter = router({
     // if you need to use socket.io, read and register route in server/_core/index.ts, all api should start with '/api/' so that the gateway can route correctly
@@ -90,7 +87,7 @@ export const appRouter = router({
         });
         
         // Iniciar processamento em background
-        processVideoInBackground(projectId, input.videoUrl, input.videoDuration).catch(
+        processVideoSimple(projectId, input.videoUrl, input.videoDuration).catch(
           (error: unknown) => {
             console.error("Erro no processamento em background:", error);
           }
@@ -118,8 +115,8 @@ export const appRouter = router({
           status: "processing",
         });
         
-        // Iniciar processamento em background
-        processYouTubeVideoInBackground(projectId, input.youtubeUrl).catch((error: unknown) => {
+        // Iniciar processamento em background (estimar 5 minutos)
+        processVideoSimple(projectId, input.youtubeUrl, 300).catch((error: unknown) => {
           console.error("Erro no processamento em background:", error);
         });
         
