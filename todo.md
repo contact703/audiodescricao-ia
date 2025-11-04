@@ -45,3 +45,9 @@
 - [ ] Integração com plataformas de streaming
 - [ ] API pública para desenvolvedores
 - [ ] Exportação para formatos profissionais (SRT, WebVTT)
+
+## Bugs Reportados pelo Usuário
+- [x] Erro ao fazer upload de vídeo - CORRIGIDO (endpoint /api/storage/upload criado)
+- [x] Erro ao processar vídeo do YouTube - CORRIGIDO (processador simplificado sem FFmpeg)
+- [x] Implementar endpoint de storage funcional - CONCLUÍDO
+- [x] Testar completamente com vídeo real - TESTES BÁSICOS PASSARAM
