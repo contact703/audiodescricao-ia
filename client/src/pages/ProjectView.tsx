@@ -22,6 +22,7 @@ export default function ProjectView() {
   const params = useParams();
   const projectId = parseInt(params.id || "0");
 
+  // TODOS OS HOOKS DEVEM VIR ANTES DE QUALQUER RETURN CONDICIONAL
   const { data: project, isLoading } = trpc.audiodescription.getById.useQuery(
     { id: projectId },
     { enabled: projectId > 0 }
@@ -30,6 +31,11 @@ export default function ProjectView() {
   const { data: units } = trpc.audiodescription.getUnits.useQuery(
     { projectId },
     { enabled: projectId > 0 && project?.status === "completed" }
+  );
+
+  const downloadSRT = trpc.audiodescription.downloadSRT.useQuery(
+    { id: projectId },
+    { enabled: false }
   );
 
   const deleteProject = trpc.audiodescription.delete.useMutation({
@@ -92,11 +98,6 @@ export default function ProjectView() {
     a.click();
     URL.revokeObjectURL(url);
   };
-
-  const downloadSRT = trpc.audiodescription.downloadSRT.useQuery(
-    { id: projectId },
-    { enabled: false }
-  );
 
   const handleDownloadSRT = async () => {
     try {

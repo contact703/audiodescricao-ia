@@ -59,3 +59,8 @@
 - [x] Exportar roteiro em formato SRT com minutagem exata
 - [x] Gerar áudio completo em MP3/WAV para download
 - [x] Testar com vídeo real e validar que funciona - Vídeo de teste criado
+
+## Bug Crítico Identificado
+- [x] Página NewProject.tsx não tem botão de submit para upload - CORRIGIDO (upload automático ao selecionar arquivo)
+- [x] Lógica de upload não está conectada ao backend - CORRIGIDO (endpoint /api/storage/upload funcionando)
+- [x] Testar fluxo completo de ponta a ponta - TESTADO E FUNCIONANDO

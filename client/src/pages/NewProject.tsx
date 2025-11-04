@@ -80,9 +80,11 @@ export default function NewProject() {
     }
 
     setUploading(true);
+    toast.info("Iniciando upload do vídeo...");
 
     try {
       // Upload para S3
+      console.log("[Upload] Iniciando upload do arquivo:", file.name, file.size, "bytes");
       const formData = new FormData();
       formData.append("file", file);
 
@@ -92,27 +94,40 @@ export default function NewProject() {
         body: formData,
       });
 
+      console.log("[Upload] Resposta do servidor:", uploadResponse.status);
+
       if (!uploadResponse.ok) {
+        const errorText = await uploadResponse.text();
+        console.error("[Upload] Erro:", errorText);
         throw new Error("Falha no upload do vídeo");
       }
 
       const { url, key } = await uploadResponse.json();
+      console.log("[Upload] Upload concluído! URL:", url);
+      toast.success("✅ Vídeo enviado com sucesso!");
 
       // Obter duração do vídeo
+      toast.info("Obtendo duração do vídeo...");
       const video = document.createElement("video");
       video.preload = "metadata";
       
       const duration = await new Promise<number>((resolve, reject) => {
         video.onloadedmetadata = () => {
-          resolve(Math.floor(video.duration));
+          const dur = Math.floor(video.duration);
+          console.log("[Upload] Duração do vídeo:", dur, "segundos");
+          resolve(dur);
         };
         video.onerror = () => {
+          console.error("[Upload] Erro ao carregar metadados");
           reject(new Error("Erro ao carregar metadados do vídeo"));
         };
         video.src = URL.createObjectURL(file);
       });
 
       // Criar projeto
+      console.log("[Upload] Criando projeto com dados:", { title: title.trim(), videoUrl: url, videoDuration: duration });
+      toast.info("🎥 Criando projeto e iniciando processamento...");
+      
       createFromUpload.mutate({
         title: title.trim(),
         videoUrl: url,
@@ -120,9 +135,8 @@ export default function NewProject() {
         videoDuration: duration,
       });
     } catch (error) {
-      console.error("Erro no upload:", error);
-      toast.error("Erro ao fazer upload do vídeo");
-    } finally {
+      console.error("[Upload] Erro no upload:", error);
+      toast.error(`Erro ao fazer upload do vídeo: ${error instanceof Error ? error.message : 'Erro desconhecido'}`);
       setUploading(false);
     }
   };
