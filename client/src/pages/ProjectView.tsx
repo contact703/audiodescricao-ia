@@ -1,3 +1,4 @@
+import React, { useEffect } from "react";
 import { useAuth } from "@/_core/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -14,13 +15,22 @@ import {
   Mic,
   XCircle,
 } from "lucide-react";
-import { Link, useParams } from "wouter";
+import { Link, useParams, useLocation } from "wouter";
 import { toast } from "sonner";
 
 export default function ProjectView() {
   const { user } = useAuth();
+  const [, setLocation] = useLocation();
   const params = useParams();
   const projectId = parseInt(params.id || "0");
+  const [shouldRedirect, setShouldRedirect] = React.useState<boolean>(false);
+
+  // Navegação segura após deleção
+  useEffect(() => {
+    if (shouldRedirect) {
+      setLocation("/dashboard");
+    }
+  }, [shouldRedirect, setLocation]);
 
   // TODOS OS HOOKS DEVEM VIR ANTES DE QUALQUER RETURN CONDICIONAL
   const { data: project, isLoading } = trpc.audiodescription.getById.useQuery(
@@ -41,7 +51,7 @@ export default function ProjectView() {
   const deleteProject = trpc.audiodescription.delete.useMutation({
     onSuccess: () => {
       toast.success("Projeto deletado com sucesso");
-      window.location.href = "/dashboard";
+      setShouldRedirect(true);
     },
     onError: (error) => {
       toast.error(`Erro ao deletar projeto: ${error.message}`);

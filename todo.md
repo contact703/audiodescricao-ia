@@ -64,3 +64,10 @@
 - [x] Página NewProject.tsx não tem botão de submit para upload - CORRIGIDO (upload automático ao selecionar arquivo)
 - [x] Lógica de upload não está conectada ao backend - CORRIGIDO (endpoint /api/storage/upload funcionando)
 - [x] Testar fluxo completo de ponta a ponta - TESTADO E FUNCIONANDO
+
+## Erro Crítico na Versão Publicada
+- [x] Erro React #310: useEffect chamado durante renderização - IDENTIFICADO
+- [x] Identificar componente que está causando o erro - NewProject.tsx e ProjectView.tsx
+- [x] Corrigir chamada de useEffect/navegação durante render - CORRIGIDO (usando useEffect para navegação)
+- [x] Testar na versão de desenvolvimento - TESTADO E FUNCIONANDO
+- [ ] Publicar nova versão corrigida

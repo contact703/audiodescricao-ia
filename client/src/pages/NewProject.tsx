@@ -6,7 +6,7 @@ import { Label } from "@/components/ui/label";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { trpc } from "@/lib/trpc";
 import { Upload, Youtube, Loader2, ArrowLeft } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Link, useLocation } from "wouter";
 import { toast } from "sonner";
 
@@ -16,11 +16,20 @@ export default function NewProject() {
   const [title, setTitle] = useState("");
   const [youtubeUrl, setYoutubeUrl] = useState("");
   const [uploading, setUploading] = useState(false);
+  const [redirectTo, setRedirectTo] = useState<string | null>(null);
+
+  // Navegação segura após mutation
+  useEffect(() => {
+    if (redirectTo) {
+      setLocation(redirectTo);
+      setRedirectTo(null);
+    }
+  }, [redirectTo, setLocation]);
 
   const createFromYouTube = trpc.audiodescription.createFromYouTube.useMutation({
     onSuccess: (data) => {
       toast.success("Projeto criado! Processamento iniciado.");
-      setLocation(`/project/${data.projectId}`);
+      setRedirectTo(`/project/${data.projectId}`);
     },
     onError: (error) => {
       toast.error(`Erro ao criar projeto: ${error.message}`);
@@ -30,7 +39,7 @@ export default function NewProject() {
   const createFromUpload = trpc.audiodescription.createFromUpload.useMutation({
     onSuccess: (data) => {
       toast.success("Vídeo enviado! Processamento iniciado.");
-      setLocation(`/project/${data.projectId}`);
+      setRedirectTo(`/project/${data.projectId}`);
     },
     onError: (error) => {
       toast.error(`Erro ao criar projeto: ${error.message}`);
