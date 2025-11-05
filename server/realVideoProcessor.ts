@@ -133,20 +133,39 @@ export async function processRealVideo(
  * Baixa vídeo se for URL externa ou retorna caminho local
  */
 async function downloadVideo(videoUrl: string, tempDir: string): Promise<string> {
-  // Se for URL do YouTube, usar yt-dlp
+  // Se for URL do YouTube, baixar com yt-dlp
   if (videoUrl.includes("youtube.com") || videoUrl.includes("youtu.be")) {
-    const outputPath = path.join(tempDir, "video.mp4");
-    console.log("Baixando vídeo do YouTube...");
+    const outputPath = path.join(tempDir, "video.%(ext)s");
+    console.log("[YouTube] Baixando vídeo do YouTube com yt-dlp...");
+    console.log("[YouTube] URL:", videoUrl);
     
     try {
-      await execAsync(
-        `yt-dlp -f "best[ext=mp4]" -o "${outputPath}" "${videoUrl}"`,
-        { timeout: 300000 } // 5 minutos de timeout
-      );
-      return outputPath;
-    } catch (error) {
-      console.error("Erro ao baixar do YouTube:", error);
-      throw new Error("Falha ao baixar vídeo do YouTube. Verifique se a URL está correta.");
+      // Usar formato simples que funciona sem assinatura
+      const command = `/usr/local/bin/yt-dlp-clean -f "worst[ext=mp4]/worst" --no-check-certificate -o "${outputPath}" "${videoUrl}"`;
+      console.log("[YouTube] Comando:", command);
+      
+      const result = await execAsync(command, {
+        timeout: 600000, // 10 minutos
+        maxBuffer: 50 * 1024 * 1024 // 50MB buffer
+      });
+      
+      console.log("[YouTube] Download concluído:", result.stdout);
+      
+      // Encontrar arquivo baixado
+      const files = await execAsync(`ls "${tempDir}"/video.*`);
+      const downloadedFile = files.stdout.trim().split("\n")[0];
+      
+      if (!downloadedFile) {
+        throw new Error("Arquivo de vídeo não encontrado após download");
+      }
+      
+      console.log("[YouTube] Arquivo baixado:", downloadedFile);
+      return downloadedFile;
+    } catch (error: any) {
+      console.error("[YouTube] Erro ao baixar vídeo:", error);
+      console.error("[YouTube] stderr:", error.stderr);
+      console.error("[YouTube] stdout:", error.stdout);
+      throw new Error(`Falha ao baixar vídeo do YouTube: ${error.message}`);
     }
   }
   

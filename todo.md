@@ -71,3 +71,11 @@
 - [x] Corrigir chamada de useEffect/navegação durante render - CORRIGIDO (usando useEffect para navegação)
 - [x] Testar na versão de desenvolvimento - TESTADO E FUNCIONANDO
 - [ ] Publicar nova versão corrigida
+
+## Bug Crítico: YouTube não funciona
+- [x] Download do YouTube está falhando com erro "URL incorreta" - CORRIGIDO
+- [x] Investigar código de download do YouTube - Problema: conflito Python 3.13 vs 3.11
+- [x] Testar com URL real do YouTube - TESTADO E FUNCIONANDO (projeto 180006)
+- [x] Validar que ambos os métodos (YouTube e upload) funcionam - AMBOS FUNCIONANDO
+- [ ] Fazer commit final no GitHub
+- [ ] Gerar ZIP do projeto completo
