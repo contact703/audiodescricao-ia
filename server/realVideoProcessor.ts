@@ -143,7 +143,8 @@ async function ensureYtDlpClean(): Promise<void> {
     await execAsync('/usr/local/bin/yt-dlp-clean --version');
   } catch (error) {
     console.log('[YouTube] yt-dlp-clean não encontrado, criando...');
-    await execAsync('cd /home/ubuntu/audiodescricao-ia && ./yt-dlp-setup.sh');
+    const projectRoot = process.cwd();
+    await execAsync(`cd ${projectRoot} && ./yt-dlp-setup.sh`);
   }
 }
 
