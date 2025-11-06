@@ -1,0 +1,9 @@
+{
+  "query": "ALTER TABLE ad_projects ADD COLUMN progress INT DEFAULT 0, ADD COLUMN progress_message TEXT;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4RKHr39kPsmXZbH.29c7ca5a2be1 --database 2ivs3nwq9ZqqhjL5GCHUfU --execute ALTER TABLE ad_projects ADD COLUMN progress INT DEFAULT 0, ADD COLUMN progress_message TEXT;",
+  "rows": [],
+  "messages": [],
+  "stdout": "",
+  "stderr": "",
+  "execution_time_ms": 1111
+}

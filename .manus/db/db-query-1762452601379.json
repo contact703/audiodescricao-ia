@@ -1,0 +1,17 @@
+{
+  "query": "SELECT id, title, status, complete_audio_mp3_url, complete_audio_wav_url FROM ad_projects WHERE id = 330001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4RKHr39kPsmXZbH.29c7ca5a2be1 --database 2ivs3nwq9ZqqhjL5GCHUfU --execute SELECT id, title, status, complete_audio_mp3_url, complete_audio_wav_url FROM ad_projects WHERE id = 330001;",
+  "rows": [
+    {
+      "id": "330001",
+      "title": "Teste Barra de Progresso",
+      "status": "completed",
+      "complete_audio_mp3_url": "NULL",
+      "complete_audio_wav_url": "NULL"
+    }
+  ],
+  "messages": [],
+  "stdout": "id\ttitle\tstatus\tcomplete_audio_mp3_url\tcomplete_audio_wav_url\n330001\tTeste Barra de Progresso\tcompleted\tNULL\tNULL\n",
+  "stderr": "",
+  "execution_time_ms": 45
+}

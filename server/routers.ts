@@ -31,8 +31,23 @@ export const appRouter = router({
       return await getUserAdProjects(ctx.user.id);
     }),
 
-    // Buscar projeto por ID
-    getById: protectedProcedure
+    // Buscar progresso do projeto
+    getProgress: protectedProcedure
+      .input(z.object({ id: z.number() }))
+      .query(async ({ input }) => {
+        const { getAdProjectById } = await import("./adHelpers");
+        const project = await getAdProjectById(input.id);
+        if (!project) {
+          throw new TRPCError({ code: 'NOT_FOUND', message: 'Projeto não encontrado' });
+        }
+        return {
+          progress: project.progress || 0,
+          message: project.progressMessage || '',
+          status: project.status,
+        };
+      }),
+
+    getProject: protectedProcedure
       .input(z.object({ id: z.number() }))
       .query(async ({ input, ctx }) => {
         const { getAdProjectById } = await import("./adHelpers");

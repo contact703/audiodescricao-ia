@@ -33,7 +33,7 @@ export default function ProjectView() {
   }, [shouldRedirect, setLocation]);
 
   // TODOS OS HOOKS DEVEM VIR ANTES DE QUALQUER RETURN CONDICIONAL
-  const { data: project, isLoading } = trpc.audiodescription.getById.useQuery(
+  const { data: project, isLoading } = trpc.audiodescription.getProject.useQuery(
     { id: projectId },
     { enabled: projectId > 0 }
   );
@@ -41,6 +41,15 @@ export default function ProjectView() {
   const { data: units } = trpc.audiodescription.getUnits.useQuery(
     { projectId },
     { enabled: projectId > 0 && project?.status === "completed" }
+  );
+
+  // Polling de progresso para projetos em processamento
+  const { data: progressData } = trpc.audiodescription.getProgress.useQuery(
+    { id: projectId },
+    {
+      enabled: projectId > 0 && project?.status === "processing",
+      refetchInterval: 2000, // Atualiza a cada 2 segundos
+    }
   );
 
   const downloadSRT = trpc.audiodescription.downloadSRT.useQuery(
@@ -216,13 +225,26 @@ export default function ProjectView() {
 
               {project.status === "processing" && (
                 <div className="rounded-lg border bg-muted p-4">
-                  <div className="flex items-center gap-3">
-                    <Loader2 className="h-5 w-5 animate-spin text-primary" />
-                    <div>
-                      <p className="font-semibold">Processamento em Andamento</p>
-                      <p className="text-sm text-muted-foreground">
-                        A IA está analisando o vídeo e gerando a audiodescrição. Isso pode levar alguns minutos.
-                      </p>
+                  <div className="space-y-4">
+                    <div className="flex items-center gap-3">
+                      <Loader2 className="h-5 w-5 animate-spin text-primary" />
+                      <div className="flex-1">
+                        <p className="font-semibold">Processamento em Andamento</p>
+                        <p className="text-sm text-muted-foreground">
+                          {progressData?.message || 'A IA está analisando o vídeo e gerando a audiodescrição...'}
+                        </p>
+                      </div>
+                      <span className="text-sm font-medium">
+                        {progressData?.progress || 0}%
+                      </span>
+                    </div>
+                    
+                    {/* Barra de progresso */}
+                    <div className="h-2 w-full overflow-hidden rounded-full bg-muted-foreground/20">
+                      <div
+                        className="h-full bg-primary transition-all duration-300"
+                        style={{ width: `${progressData?.progress || 0}%` }}
+                      />
                     </div>
                   </div>
                 </div>

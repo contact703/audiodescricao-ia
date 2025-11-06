@@ -8,7 +8,7 @@ import { promisify } from "util";
 import { readFile, unlink, mkdir } from "fs/promises";
 import path from "path";
 import { storagePut } from "./storage";
-import { updateAdProjectStatus, createAdUnits } from "./adHelpers";
+import { updateAdProjectStatus, createAdUnits, updateAdProjectProgress } from "./adHelpers";
 import { invokeLLM } from "./_core/llm";
 import { generateAudioBatch } from "./ttsService";
 import { generateCompleteAudio } from "./audioMerger";
@@ -41,14 +41,17 @@ export async function processRealVideo(
   
   try {
     console.log(`[Projeto ${projectId}] Iniciando processamento REAL do vídeo`);
+    await updateAdProjectProgress(projectId, 5, 'Preparando processamento...');
     
     // Criar diretório temporário
     await mkdir(tempDir, { recursive: true });
     
     // Baixar vídeo se for URL
+    await updateAdProjectProgress(projectId, 10, 'Baixando vídeo...');
     const videoPath = await downloadVideo(videoUrl, tempDir);
     
     // Extrair frames do vídeo REAL
+    await updateAdProjectProgress(projectId, 20, 'Extraindo frames do vídeo...');
     console.log(`[Projeto ${projectId}] Extraindo frames do vídeo...`);
     const frames = await extractFrames(videoPath, tempDir, videoDuration, projectId);
     
@@ -59,13 +62,16 @@ export async function processRealVideo(
     console.log(`[Projeto ${projectId}] ${frames.length} frames extraídos com sucesso`);
     
     // Analisar frames com IA (visão computacional REAL)
+    await updateAdProjectProgress(projectId, 40, 'Analisando conteúdo visual com IA...');
     console.log(`[Projeto ${projectId}] Analisando frames com IA...`);
     const descriptions = await analyzeFramesWithAI(frames, projectId);
     
     // Criar roteiro estruturado
+    await updateAdProjectProgress(projectId, 60, 'Gerando roteiro de audiodescrição...');
     const script = buildScript(descriptions);
     
     // Gerar áudio para cada unidade
+    await updateAdProjectProgress(projectId, 80, 'Gerando áudio narrado...');
     console.log(`[Projeto ${projectId}] Gerando áudio TTS...`);
     const audioInputs = script.map((unit, index) => ({
       text: unit.text,

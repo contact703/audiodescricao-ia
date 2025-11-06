@@ -43,6 +43,28 @@ export async function getUserAdProjects(userId: number) {
 }
 
 /**
+ * Atualiza progresso do projeto
+ */
+export async function updateAdProjectProgress(
+  id: number,
+  progress: number,
+  message: string
+): Promise<void> {
+  const db = await getDb();
+  if (!db) throw new Error("Database not available");
+
+  await db
+    .update(adProjects)
+    .set({
+      progress,
+      progressMessage: message,
+    })
+    .where(eq(adProjects.id, id));
+
+  console.log(`[Projeto ${id}] Progresso: ${progress}% - ${message}`);
+}
+
+/**
  * Atualiza status do projeto
  */
 export async function updateAdProjectStatus(

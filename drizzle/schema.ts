@@ -36,6 +36,8 @@ export const adProjects = mysqlTable("ad_projects", {
   completeAudioMp3Key: text("complete_audio_mp3_key"),
   completeAudioWavUrl: text("complete_audio_wav_url"),
   completeAudioWavKey: text("complete_audio_wav_key"),
+  progress: int("progress").default(0),
+  progressMessage: text("progress_message"),
   createdAt: timestamp("created_at").defaultNow().notNull(),
   updatedAt: timestamp("updated_at").defaultNow().onUpdateNow().notNull(),
   completedAt: timestamp("completed_at"),

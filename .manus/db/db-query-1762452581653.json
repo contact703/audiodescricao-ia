@@ -1,0 +1,58 @@
+{
+  "query": "SHOW COLUMNS FROM ad_projects LIKE '%audio%';",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4RKHr39kPsmXZbH.29c7ca5a2be1 --database 2ivs3nwq9ZqqhjL5GCHUfU --execute SHOW COLUMNS FROM ad_projects LIKE '%audio%';",
+  "rows": [
+    {
+      "Field": "audio_url",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "audio_key",
+      "Type": "varchar(500)",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "complete_audio_mp3_url",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "complete_audio_mp3_key",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "complete_audio_wav_url",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    },
+    {
+      "Field": "complete_audio_wav_key",
+      "Type": "text",
+      "Null": "YES",
+      "Key": "",
+      "Default": "NULL",
+      "Extra": ""
+    }
+  ],
+  "messages": [],
+  "stdout": "Field\tType\tNull\tKey\tDefault\tExtra\naudio_url\ttext\tYES\t\tNULL\t\naudio_key\tvarchar(500)\tYES\t\tNULL\t\ncomplete_audio_mp3_url\ttext\tYES\t\tNULL\t\ncomplete_audio_mp3_key\ttext\tYES\t\tNULL\t\ncomplete_audio_wav_url\ttext\tYES\t\tNULL\t\ncomplete_audio_wav_key\ttext\tYES\t\tNULL\t\n",
+  "stderr": "",
+  "execution_time_ms": 48
+}

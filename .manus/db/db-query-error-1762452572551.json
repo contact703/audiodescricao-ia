@@ -1,0 +1,8 @@
+{
+  "query": "SELECT id, title, status, completeAudioMp3Url, completeAudioWavUrl FROM ad_projects WHERE id = 330001;",
+  "command": "mysql --batch --raw --column-names --default-character-set=utf8mb4 --host gateway02.us-east-1.prod.aws.tidbcloud.com --port 4000 --user 4RKHr39kPsmXZbH.29c7ca5a2be1 --database 2ivs3nwq9ZqqhjL5GCHUfU --execute SELECT id, title, status, completeAudioMp3Url, completeAudioWavUrl FROM ad_projects WHERE id = 330001;",
+  "returncode": 1,
+  "logs": [
+    "ERROR 1054 (42S22) at line 1: Unknown column 'completeaudiomp3url' in 'field list'"
+  ]
+}
